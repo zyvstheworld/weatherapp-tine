@@ -1,0 +1,108 @@
+<div class="search">
+  <form (submit)="onSearch()" class="search-form">
+    <input
+      type="text"
+      [(ngModel)]="city"
+      placeholder="Search City"
+      name="city"
+      class="search-input"
+    />
+    <button type="submit" class="search-button" aria-label="Search">
+      <img src="assets/search-icon.jpg" alt="Search Icon" />
+    </button>
+    <button class="location-button" (click)="getWeatherByLocation()" aria-label="Use My Location">
+      <img src="assets/location-icon.jpg" alt="Use My Location" />
+    </button>
+    <button class="temperature-toggle-button" (click)="toggleTemperatureUnit()" aria-label="Toggle Temperature Unit">
+      <img [src]="isCelsius ? 'assets/temperature-icon-fahrenheit.jpg' : 'assets/temperature-icon-celsius.jpg'" alt="Toggle Temperature Unit" />
+    </button>
+  </form>
+</div>
+
+<!-- <div *ngIf="loading" class="loading-message">
+  Fetching weather data...
+</div> -->
+
+<div *ngIf="weatherData && weatherData.main" class="container">
+  <div class="upper-data">
+    <img
+      [src]="'assets/' + (weatherData.weather[0].icon.includes('d') ? 'Morning' : 'Night') + '.jpg'"
+      alt="Weather Icon"
+    />
+
+    <div class="weather-data">
+      <div class="location">{{ weatherData.name }}</div>
+      <div class="temperature">{{ getTemperature() }}°{{ isCelsius ? 'C' : 'F' }}</div>
+    </div>
+  </div>
+
+
+  <div class="data-container">
+    <div class="lower-data">
+      <div class="forecast"></div>
+      <div class="forecast-container">
+        <div class="info-block">
+          <div class="info-block-label">
+            <img src="assets/weather.jpg" alt="Weather" />
+            <span>Weather</span>
+          </div>
+          <div class="info-block-value">{{ weatherData.weather[0].description }}</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-block-label">
+            <img src="assets/humidity.jpg" alt="Humidity" />
+            <span>Humidity</span>
+          </div>
+          <div class="info-block-value">{{ weatherData.main.humidity }}%</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-block-label">
+            <img src="assets/wind.jpg" alt="Wind" />
+            <span>Wind</span>
+          </div>
+          <div class="info-block-value">{{ weatherData.wind.speed }} km/h</div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-block-label">
+            <img src="assets/calendar.jpg" alt="Day" />
+            <span>Day&Time</span>
+          </div>
+          <div class="info-block-value">{{ getLocalTime() }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="forecast"></div>
+    <div class="forecast-container">
+      <div *ngFor="let forecast of forecastData" class="forecast-day">
+        <div class="forecast-date">
+          {{ forecast.localDate | date: ' MMM d' }}
+        </div>
+        <div class="forecast-icon">
+          <img [src]="'http://openweathermap.org/img/wn/' + forecast.weather[0].icon + '@2x.png'" alt="Weather Icon" />
+        </div>
+        <div class="forecast-temp">
+          {{ isCelsius ? forecast.main.temp : (forecast.main.temp * 9/5 + 32) | number: '1.0-1' }}°{{ isCelsius ? 'C' : 'F' }}
+        </div>
+        <div class="forecast-description">
+          <img src="assets/weather.jpg" alt="Weather" />
+          {{ forecast.weather[0].description }}
+        </div>
+        <div class="forecast-humidity">
+          <img src="assets/humidity.jpg" alt="Humidity" />
+          Humidity: {{ forecast.main.humidity }}%
+        </div>
+        <div class="forecast-wind">
+          <img src="assets/wind.jpg" alt="Wind" />
+          Wind: {{ forecast.wind.speed }} km/h
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="error" class="error-message">
+  Please insert a valid city.
+</div>
